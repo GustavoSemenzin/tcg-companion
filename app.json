@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "TCG Companion",
+    "slug": "tcg-companion",
+    "scheme": "tcgcompanion",
+    "version": "1.0.0",
+    "android": {
+      "package": "com.tcgcompanion.mobile"
+    },
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-sqlite"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

@@ -1,0 +1,38 @@
+﻿# Dependências
+node_modules/
+
+# Expo e Metro
+.expo/
+dist/
+web-build/
+.metro-health-check*
+
+# Arquivos locais de ambiente e segredos
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# Saídas de build Android
+android/.gradle/
+android/app/build/
+*.apk
+*.aab
+
+# Logs e arquivos temporários
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tsbuildinfo
+
+# Sistemas operacionais e editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
