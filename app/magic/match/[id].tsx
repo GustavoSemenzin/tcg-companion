@@ -46,16 +46,18 @@ export default function MatchDetailsScreen() {
           <View style={styles.summaryCard}>
             <Text style={styles.summaryLabel}>RESULTADO FINAL</Text>
             <View style={styles.finalScore}>
-              <View style={styles.finalPlayer}>
-                <Text style={styles.playerName}>JOGADOR 1</Text>
-                <Text style={[styles.finalLife, { color: match.playerOneColor }]}>{match.finalLifeOne}</Text>
-              </View>
-              <Text style={styles.scoreDivider}>—</Text>
-              <View style={styles.finalPlayer}>
-                <Text style={styles.playerName}>JOGADOR 2</Text>
-                <Text style={[styles.finalLife, { color: match.playerTwoColor }]}>{match.finalLifeTwo}</Text>
-              </View>
+              {match.finalLives.map((life, index) => (
+                <View key={index} style={styles.finalPlayer}>
+                  <Text numberOfLines={1} style={styles.playerName}>{match.playerNames[index]}</Text>
+                  <Text style={[styles.finalLife, { color: match.playerColors[index] }]}>{life}</Text>
+                </View>
+              ))}
             </View>
+            <Text style={styles.matchResult}>
+              {match.playerCount > 2
+                ? match.winnerPlayer ? `Vencedor: ${match.playerNames[match.winnerPlayer - 1]}` : 'Resultado não registrado'
+                : match.md3Score ? `Resultado da MD3: ${match.md3Score[0]}–${match.md3Score[1]}` : 'MD3 sem placar'}
+            </Text>
             <Text style={styles.finishedDate}>Finalizada em {new Date(match.finishedAt).toLocaleString('pt-BR', { dateStyle: 'long', timeStyle: 'short' })}</Text>
           </View>
 
@@ -65,8 +67,8 @@ export default function MatchDetailsScreen() {
           </View>
           {match.snapshots.map((snapshot, index) => {
             const previous = match.snapshots[index - 1];
-            const deltaOne = previous ? snapshot.lifeOne - previous.lifeOne : null;
-            const deltaTwo = previous ? snapshot.lifeTwo - previous.lifeTwo : null;
+            const lives = snapshot.lives ?? [snapshot.lifeOne, snapshot.lifeTwo, snapshot.lifeThree ?? 0, snapshot.lifeFour ?? 0];
+            const previousLives = previous?.lives ?? (previous ? [previous.lifeOne, previous.lifeTwo, previous.lifeThree ?? 0, previous.lifeFour ?? 0] : []);
 
             return (
               <View key={snapshot.id} style={styles.snapshotCard}>
@@ -82,8 +84,15 @@ export default function MatchDetailsScreen() {
                   </View>
                 </View>
                 <View style={styles.snapshotPlayers}>
-                  <SnapshotPlayer label="J1" life={snapshot.lifeOne} delta={deltaOne} color={match.playerOneColor} />
-                  <SnapshotPlayer label="J2" life={snapshot.lifeTwo} delta={deltaTwo} color={match.playerTwoColor} />
+                  {lives.slice(0, match.playerCount).map((life, playerIndex) => (
+                    <SnapshotPlayer
+                      key={playerIndex}
+                      label={match.playerNames[playerIndex]}
+                      life={life}
+                      delta={previous ? life - previousLives[playerIndex] : null}
+                      color={match.playerColors[playerIndex]}
+                    />
+                  ))}
                 </View>
               </View>
             );
@@ -119,10 +128,11 @@ const styles = StyleSheet.create({
   content: { gap: 12, paddingBottom: 30 },
   summaryCard: { padding: 18, borderRadius: 20, backgroundColor: '#191F26', borderWidth: 1, borderColor: '#29313A', marginBottom: 8 },
   summaryLabel: { color: '#8A96A3', fontSize: 10, fontWeight: '900', letterSpacing: 1.1, textAlign: 'center' },
-  finalScore: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginTop: 16 },
-  finalPlayer: { alignItems: 'center', minWidth: 82 },
+  finalScore: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-around', marginTop: 16, gap: 12 },
+  finalPlayer: { alignItems: 'center', minWidth: 58 },
   playerName: { color: '#8A96A3', fontSize: 10, fontWeight: '800', letterSpacing: 0.7 },
   finalLife: { fontSize: 34, fontWeight: '900', fontVariant: ['tabular-nums'], marginTop: 4 },
+  matchResult: { color: '#B7F36B', fontSize: 15, fontWeight: '900', textAlign: 'center', marginTop: 16 },
   scoreDivider: { color: '#596673', fontSize: 18 },
   finishedDate: { color: '#71808E', fontSize: 12, textAlign: 'center', marginTop: 14 },
   timelineHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 5, marginBottom: 2 },
@@ -135,7 +145,7 @@ const styles = StyleSheet.create({
   snapshotMeta: { flex: 1 },
   snapshotTitle: { color: '#E7ECF1', fontSize: 13, fontWeight: '800' },
   snapshotTime: { color: '#71808E', fontSize: 11, marginTop: 2 },
-  snapshotPlayers: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10, borderTopWidth: 1, borderTopColor: '#29313A' },
+  snapshotPlayers: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 8, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#29313A' },
   snapshotPlayer: { flexDirection: 'row', alignItems: 'center', gap: 7 },
   snapshotLife: { fontSize: 16, fontWeight: '900', fontVariant: ['tabular-nums'] },
   delta: { flexDirection: 'row', alignItems: 'center', gap: 1 },

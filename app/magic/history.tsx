@@ -111,16 +111,21 @@ export default function MatchHistoryScreen() {
                 <View style={styles.matchIcon}><Ionicons name="trophy-outline" size={20} color="#B7F36B" /></View>
                 <View style={styles.matchNameBlock}>
                   <Text numberOfLines={1} style={styles.matchName}>{match.name}</Text>
-                  <Text style={styles.matchDate}>{new Date(match.finishedAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</Text>
+                  <Text style={styles.matchDate}>{match.playerCount} jogadores · {match.startingLife} de vida inicial · {new Date(match.finishedAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</Text>
+                  <Text style={styles.matchResult}>
+                    {match.playerCount > 2
+                      ? match.winnerPlayer ? `Vencedor: ${match.playerNames[match.winnerPlayer - 1]}` : 'Resultado não registrado'
+                      : match.md3Score ? `MD3: ${match.md3Score[0]}–${match.md3Score[1]}` : 'MD3 sem placar'}
+                  </Text>
                 </View>
                 <Ionicons name="chevron-forward" size={18} color="#71808E" />
               </View>
               <View style={styles.matchFooter}>
                 <Text style={styles.scoreLabel}>VIDA FINAL</Text>
                 <View style={styles.finalScore}>
-                  <Text style={[styles.scorePlayer, { color: match.playerOneColor }]}>J1 {match.finalLifeOne}</Text>
-                  <Text style={styles.scoreSeparator}>·</Text>
-                  <Text style={[styles.scorePlayer, { color: match.playerTwoColor }]}>J2 {match.finalLifeTwo}</Text>
+                  {match.finalLives.map((life, index) => (
+                    <Text key={index} numberOfLines={1} style={[styles.scorePlayer, { color: match.playerColors[index] }]}>{match.playerNames[index]} {life}</Text>
+                  ))}
                 </View>
                 <Text style={styles.snapshotCount}>{match.snapshotCount} registros</Text>
               </View>
@@ -157,10 +162,11 @@ const styles = StyleSheet.create({
   matchNameBlock: { flex: 1 },
   matchName: { color: '#F1F4F7', fontSize: 16, fontWeight: '800' },
   matchDate: { color: '#8A96A3', fontSize: 12, marginTop: 4 },
+  matchResult: { color: '#B7F36B', fontSize: 12, fontWeight: '800', marginTop: 5 },
   matchFooter: { flexDirection: 'row', alignItems: 'center', marginTop: 14, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#29313A' },
   scoreLabel: { color: '#71808E', fontSize: 9, fontWeight: '900', letterSpacing: 0.7 },
-  finalScore: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7 },
-  scorePlayer: { fontSize: 14, fontWeight: '900', fontVariant: ['tabular-nums'] },
+  finalScore: { flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 7 },
+  scorePlayer: { fontSize: 12, fontWeight: '900', fontVariant: ['tabular-nums'] },
   scoreSeparator: { color: '#71808E', fontSize: 16 },
   snapshotCount: { color: '#8A96A3', fontSize: 11 },
 });

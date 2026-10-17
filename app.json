@@ -7,15 +7,29 @@
     "android": {
       "package": "com.tcgcompanion.mobile"
     },
-    "orientation": "portrait",
+    "orientation": "default",
     "userInterfaceStyle": "dark",
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Permita que o TCG Companion use a camera para identificar cartas de Magic.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2ad96279-667e-4479-8d54-8e4efbc0a398"
+      }
     }
   }
 }

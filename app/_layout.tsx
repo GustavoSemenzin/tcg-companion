@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const colors = {
   background: '#101419',
@@ -10,6 +12,10 @@ const colors = {
 };
 
 export default function RootLayout() {
+  useEffect(() => {
+    void ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
+  }, []);
+
   return (
     <>
       <StatusBar style="light" />
